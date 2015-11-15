@@ -1,0 +1,13 @@
+{
+  "name": "upassist/nodeapi",
+  "type": "typo3-flow-package",
+  "description": "A node API package",
+  "require": {
+    "typo3/flow": "*"
+  },
+  "autoload": {
+    "psr-0": {
+      "UpAssist\\NodeApi": "Classes"
+    }
+  }
+}
