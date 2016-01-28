@@ -1,10 +1,12 @@
 <?php
 namespace UpAssist\NodeApi\Services\Event;
 
+use TYPO3\Flow\Annotations as Flow;
+
 /**
  * Class WriteService
  * @package UpAssist\NodeApi\Services\Event
- * @Scope(Flow\Singleton)
+ * @Flow\Scope("singleton")
  */
 class WriteService
 {
