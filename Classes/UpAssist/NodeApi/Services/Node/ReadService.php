@@ -6,7 +6,9 @@ use TYPO3\Eel\Context;
 use TYPO3\Eel\FlowQuery\FlowQuery;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Persistence\PersistenceManagerInterface;
+use TYPO3\Flow\Property\PropertyMapper;
 use TYPO3\Neos\Domain\Service\ContentContext;
+use TYPO3\Neos\Service\LinkingService;
 use TYPO3\Neos\Service\UserService;
 use TYPO3\TYPO3CR\Domain\Factory\NodeFactory;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
@@ -40,6 +42,12 @@ class ReadService
      * @var ContentContextService
      */
     protected $contentContextService;
+
+    /**
+     * @Flow\Inject
+     * @var PropertyMapper
+     */
+    protected $propertyMapper;
 
     /**
      * Search all properties for given $term
@@ -91,5 +99,23 @@ class ReadService
 
     }
 
+    /**
+     * @param string $identifier
+     * @return NodeInterface
+     */
+    public function getNodeByIdentifier($identifier)
+    {
+        $context = $this->contentContextService->getContentContext();
+        return $context->getNodeByIdentifier($identifier);
+    }
 
+
+    /**
+     * @param string $string
+     * @return NodeInterface
+     */
+    public function getNodeByNodeString($string)
+    {
+        return $this->propertyMapper->convert($string, NodeInterface::class);
+    }
 }
