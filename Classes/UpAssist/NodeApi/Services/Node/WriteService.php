@@ -2,6 +2,7 @@
 namespace UpAssist\NodeApi\Services\Node;
 
 use TYPO3\Flow\Annotations as Flow;
+use UpAssist\NodeApi\Services\ContentContextService;
 
 /**
  * Class WriteService
@@ -10,5 +11,10 @@ use TYPO3\Flow\Annotations as Flow;
  */
 class WriteService
 {
+    /**
+     * @Flow\Inject
+     * @var ContentContextService
+     */
+    protected $contentContextService;
 
 }

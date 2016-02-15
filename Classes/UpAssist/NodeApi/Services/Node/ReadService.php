@@ -1,21 +1,13 @@
 <?php
 namespace UpAssist\NodeApi\Services\Node;
 
-use Doctrine\ORM\EntityManagerInterface;
-use TYPO3\Eel\Context;
-use TYPO3\Eel\FlowQuery\FlowQuery;
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Persistence\PersistenceManagerInterface;
 use TYPO3\Flow\Property\PropertyMapper;
-use TYPO3\Neos\Domain\Service\ContentContext;
-use TYPO3\Neos\Service\LinkingService;
-use TYPO3\Neos\Service\UserService;
+use TYPO3\TYPO3CR\Domain\Service\Context;
 use TYPO3\TYPO3CR\Domain\Factory\NodeFactory;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Repository\NodeDataRepository;
-use TYPO3\TYPO3CR\Domain\Service\ContextFactory;
 use UpAssist\NodeApi\Services\ContentContextService;
-use UpAssist\NodeApi\Utilities\DimensionUtility;
 
 /**
  * Class ReadService
@@ -56,7 +48,7 @@ class ReadService
      *
      * @param string $term
      * @param array $searchNodeTypes
-     * @param ContentContext $context
+     * @param Context $context
      * @param NodeInterface $startingPoint
      * @return array <\TYPO3\TYPO3CR\Domain\Model\NodeInterface>
      */
@@ -101,11 +93,12 @@ class ReadService
 
     /**
      * @param string $identifier
+     * @param array $contextProperties
      * @return NodeInterface
      */
-    public function getNodeByIdentifier($identifier)
+    public function getNodeByIdentifier($identifier, array $contextProperties = null)
     {
-        $context = $this->contentContextService->getContentContext();
+        $context = $this->contentContextService->getContentContext($contextProperties);
         return $context->getNodeByIdentifier($identifier);
     }
 

@@ -37,15 +37,17 @@ class ContentContextService
     protected $siteRepository;
 
     /**
+     * @param array $contextProperties
      * @return ContentContext
      */
-    public function getContentContext()
+    public function getContentContext(array $contextProperties = null)
     {
         if ($this->contentContext instanceof ContentContext) {
             return $this->contentContext;
         }
 
-        $contextProperties = ['workspaceName' => 'live'];
+        $contextPropertiesArray = ['workspaceName' => 'live'];
+        $contextProperties = array_merge_recursive($contextPropertiesArray, $contextProperties);
 
         $currentDomain = $this->domainRepository->findOneByActiveRequest();
 
@@ -59,4 +61,5 @@ class ContentContextService
         $this->contentContext = $this->contentContextFactory->create($contextProperties);
         return $this->contentContext;
     }
+
 }
