@@ -71,6 +71,24 @@ class ReadService
     }
 
     /**
+     * @param string $term
+     * @param array $searchNodeTypes
+     * @param Context $context
+     * @param NodeInterface|null $startingPoint
+     * @return mixed
+     */
+    public function findOneByProperties($term, array $searchNodeTypes, Context $context, NodeInterface $startingPoint = null)
+    {
+        $nodes = $this->findByProperties($term, $searchNodeTypes, $context, $startingPoint);
+
+        if (!empty($nodes)) {
+            return $nodes[0];
+        }
+
+        return null;
+    }
+
+    /**
      * @param array $nodeTypeFilter
      * @return array
      */
