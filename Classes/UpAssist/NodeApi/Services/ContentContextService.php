@@ -40,14 +40,14 @@ class ContentContextService
      * @param array $contextProperties
      * @return ContentContext
      */
-    public function getContentContext(array $contextProperties = null)
+    public function getContentContext(array $contextProperties = [])
     {
         if ($this->contentContext instanceof ContentContext) {
             return $this->contentContext;
         }
 
         $contextPropertiesArray = ['workspaceName' => 'live'];
-        $contextProperties = array_merge_recursive($contextPropertiesArray, $contextProperties);
+        $contextProperties = \TYPO3\Flow\Utility\Arrays::arrayMergeRecursiveOverrule($contextPropertiesArray, $contextProperties);
 
         $currentDomain = $this->domainRepository->findOneByActiveRequest();
 
