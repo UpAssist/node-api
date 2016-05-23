@@ -114,7 +114,7 @@ class ReadService
      * @param array $contextProperties
      * @return NodeInterface
      */
-    public function getNodeByIdentifier($identifier, array $contextProperties = null)
+    public function getNodeByIdentifier($identifier, array $contextProperties = [])
     {
         $context = $this->contentContextService->getContentContext($contextProperties);
 
