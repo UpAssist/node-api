@@ -1,0 +1,9 @@
+-
+  name: 'UpAssist NodeApi'
+  uriPattern: 'nodeapi/{@controller}(/{@action})'
+  defaults:
+    '@package': 'UpAssist.NodeApi'
+    '@controller': 'Node'
+    '@action': 'new'
+    '@format': 'html'
+  appendExceedingArguments: TRUE

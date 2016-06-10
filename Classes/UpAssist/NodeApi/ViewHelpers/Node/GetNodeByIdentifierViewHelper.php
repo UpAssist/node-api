@@ -19,6 +19,8 @@ class GetNodeByIdentifierViewHelper extends AbstractViewHelper
             $nodeIdentifier = $this->renderChildren();
         }
 
-        return $this->nodeReadService->getNodeByIdentifier($nodeIdentifier);
+        $node = $this->nodeReadService->getNodeByIdentifier($nodeIdentifier);
+
+        return $node;
     }
 }

@@ -1,0 +1,26 @@
+privilegeTargets:
+
+  'TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
+
+    'UpAssist.NodeApi:NodeController':
+      matcher: 'within(UpAssist\NodeApi\Controller\NodeController) && method(public .*->(?!initialize).*Action())'
+
+roles:
+
+  'UpAssist.Neos.FrontendLogin:User':
+    privileges:
+      -
+        privilegeTarget: 'UpAssist.NodeApi:NodeController'
+        permission: GRANT
+      -
+        privilegeTarget: 'TYPO3.Neos:AllControllerActions'
+        permission: GRANT
+      -
+        privilegeTarget: 'TYPO3.Neos:Backend.EditContent'
+        permission: GRANT
+
+  'TYPO3.Neos:Editor':
+    privileges:
+      -
+        privilegeTarget: 'UpAssist.NodeApi:NodeController'
+        permission: GRANT
