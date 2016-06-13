@@ -81,19 +81,23 @@ class WriteService
     protected $contentCacheFlusher;
 
     /**
-     * @param string $referenceNode
+     * @param string $referenceNodeIdentifier
      * @param string $nodeType
      * @param array $nodeData
      * @return Node|null
      * @throws \TYPO3\TYPO3CR\Exception\NodeException
      */
-    public function createNode($referenceNode, $nodeType, $nodeData = [])
+    public function createNode($referenceNodeIdentifier, $nodeType, $nodeData = [])
     {
         /** @var Node $referenceNode */
-        $referenceNode = $this->nodeReadService->getNodeByIdentifier($referenceNode);
+        $referenceNode = $this->nodeReadService->getNodeByIdentifier($referenceNodeIdentifier);
 
         $nodeTemplate = new NodeTemplate();
         $nodeTemplate->setNodeType($this->nodeTypeManager->getNodeType($nodeType));
+
+        if (isset($nodeData['hiddenAfterDateTime'])) {
+            $nodeTemplate->setHiddenAfterDateTime(new \DateTime($nodeData['hiddenAfterDateTime']));
+        }
 
         if (isset($nodeData['properties'])) {
             foreach ($nodeData['properties'] as $propertyName => $propertyValue) {
@@ -158,6 +162,24 @@ class WriteService
         return $parentNode->getNode($nodePath)->createNodeFromTemplate($nodeTemplate);
     }
 
+
+    /**
+     * Use this to update some meta properties of the Node.
+     *
+     * @param Node $node
+     * @param array $nodeData
+     * @return Node
+     */
+    public function updateNodeData(Node $node, $nodeData = []) {
+        if (isset($nodeData['hiddenAfterDateTime'])) {
+            $node->setHiddenAfterDateTime(new \DateTime($nodeData['hiddenAfterDateTime']));
+        }
+
+        $this->persistenceManager->persistAll();
+        $this->contentCacheFlusher->registerNodeChange($node);
+
+        return $node;
+    }
 
     /**
      * @param Node $node
