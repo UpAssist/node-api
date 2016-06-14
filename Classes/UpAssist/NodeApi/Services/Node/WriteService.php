@@ -95,7 +95,7 @@ class WriteService
         $nodeTemplate = new NodeTemplate();
         $nodeTemplate->setNodeType($this->nodeTypeManager->getNodeType($nodeType));
 
-        if (isset($nodeData['hiddenAfterDateTime'])) {
+        if (isset($nodeData['hiddenAfterDateTime']) && $nodeData['hiddenAfterDateTime'] > 0) {
             $nodeTemplate->setHiddenAfterDateTime(new \DateTime($nodeData['hiddenAfterDateTime']));
         }
 
@@ -172,7 +172,11 @@ class WriteService
      */
     public function updateNodeData(Node $node, $nodeData = []) {
         if (isset($nodeData['hiddenAfterDateTime'])) {
-            $node->setHiddenAfterDateTime(new \DateTime($nodeData['hiddenAfterDateTime']));
+            if ($nodeData['hiddenAfterDateTime'] > 0) {
+                $node->setHiddenAfterDateTime(new \DateTime($nodeData['hiddenAfterDateTime']));
+            } else {
+                $node->setHiddenAfterDateTime(null);
+            }
         }
 
         $this->persistenceManager->persistAll();
@@ -244,6 +248,10 @@ class WriteService
 
         }
 
+        if($this->validateDate($propertyValue)) {
+            $propertyValue = \DateTime::createFromFormat('Y-m-d\TH:i', $propertyValue);
+        }
+
         return $propertyValue;
     }
 
@@ -272,5 +280,13 @@ class WriteService
     }
 
 
-
+    /**
+     * @param string $date
+     * @return boolean
+     */
+    private function validateDate($date)
+    {
+        $d = \DateTime::createFromFormat('Y-m-d\TH:i', $date);
+        return $d && $d->format('Y-m-d\TH:i') === $date;
+    }
 }
