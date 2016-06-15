@@ -12,10 +12,13 @@ use TYPO3\Media\Domain\Repository\AssetRepository;
 use TYPO3\Media\Domain\Repository\ImageRepository;
 use TYPO3\Neos\TypoScript\Cache\ContentCacheFlusher;
 use TYPO3\TYPO3CR\Domain\Model\Node;
+use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Model\NodeTemplate;
+use TYPO3\TYPO3CR\Domain\Model\NodeType;
 use TYPO3\TYPO3CR\Domain\Model\Workspace;
 use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
 use TYPO3\TYPO3CR\Domain\Service\PublishingService;
+use TYPO3\TYPO3CR\Migration\Configuration\ConfigurationInterface;
 use TYPO3\TYPO3CR\Utility;
 use UpAssist\NodeApi\Services\ContentContextService;
 
@@ -80,6 +83,7 @@ class WriteService
      */
     protected $contentCacheFlusher;
 
+
     /**
      * @param string $referenceNodeIdentifier
      * @param string $nodeType
@@ -92,8 +96,10 @@ class WriteService
         /** @var Node $referenceNode */
         $referenceNode = $this->nodeReadService->getNodeByIdentifier($referenceNodeIdentifier);
 
+        /** @var NodeType $nodeTypeObject */
+        $nodeTypeObject = $this->nodeTypeManager->getNodeType($nodeType);
         $nodeTemplate = new NodeTemplate();
-        $nodeTemplate->setNodeType($this->nodeTypeManager->getNodeType($nodeType));
+        $nodeTemplate->setNodeType($nodeTypeObject);
 
         if (isset($nodeData['hiddenAfterDateTime']) && $nodeData['hiddenAfterDateTime'] > 0) {
             $nodeTemplate->setHiddenAfterDateTime(new \DateTime($nodeData['hiddenAfterDateTime']));
@@ -109,7 +115,7 @@ class WriteService
                 }
 
                 // Set the properties
-                $nodeTemplate->setProperty($propertyName, $this->propertyValueMapper($propertyValue));
+                $nodeTemplate->setProperty($propertyName, $this->propertyValueMapper($propertyValue, $this->getConfigurationTypeForPropertyByNode($propertyName, $nodeTemplate)));
             }
         }
 
@@ -136,7 +142,8 @@ class WriteService
     /**
      * @param Node $node
      */
-    public function deleteNode(Node $node) {
+    public function deleteNode(Node $node)
+    {
         $node->setRemoved(true);
         $this->persistenceManager->persistAll();
     }
@@ -155,7 +162,7 @@ class WriteService
 
         if (isset($contentNodeData['properties'])) {
             foreach ($contentNodeData['properties'] as $propertyName => $propertyValue) {
-                $nodeTemplate->setProperty($propertyName, $this->propertyValueMapper($propertyValue));
+                $nodeTemplate->setProperty($propertyName, $this->propertyValueMapper($propertyValue, $this->getConfigurationTypeForPropertyByNode($propertyName, $nodeTemplate)));
             }
         }
 
@@ -170,7 +177,8 @@ class WriteService
      * @param array $nodeData
      * @return Node
      */
-    public function updateNodeData(Node $node, $nodeData = []) {
+    public function updateNodeData(Node $node, $nodeData = [])
+    {
         if (isset($nodeData['hiddenAfterDateTime'])) {
             if ($nodeData['hiddenAfterDateTime'] > 0) {
                 $node->setHiddenAfterDateTime(new \DateTime($nodeData['hiddenAfterDateTime']));
@@ -190,7 +198,8 @@ class WriteService
      * @param array $properties
      * @return Node
      */
-    public function updateNodeProperties(Node $node, $properties = []) {
+    public function updateNodeProperties(Node $node, $properties = [])
+    {
 
         foreach ($properties as $property => $value) {
             if ($property === 'title' && $node->getNodeType()->isOfType('TYPO3.Neos:Document')) {
@@ -198,7 +207,7 @@ class WriteService
                 $node->setProperty('uriPathSegment', $newUriPathSegment);
             }
 
-            $node->getNodeData()->setProperty($property, $this->propertyValueMapper($value));
+            $node->getNodeData()->setProperty($property, $this->propertyValueMapper($value, $this->getConfigurationTypeForPropertyByNode($property, $node)));
         }
 
         if ($node->getNodeType()->isOfType('TYPO3.Neos:Document')) {
@@ -213,46 +222,63 @@ class WriteService
 
     /**
      * @param mixed $propertyValue
-     * @return string|NULL|Asset|\TYPO3\Media\Domain\Model\AssetInterface|Image
+     * @param string $type
+     * @return NULL|string|Asset|\TYPO3\Media\Domain\Model\AssetInterface|Image
      * @throws \TYPO3\Flow\Persistence\Exception\IllegalObjectTypeException
      */
-    private function propertyValueMapper($propertyValue) {
+    private function propertyValueMapper($propertyValue, $type)
+    {
 
         // Check for file uploads
-        if(is_array($propertyValue) && count($propertyValue) == 5) {
+        if ($type === 'TYPO3\Media\Domain\Model\Asset') {
             /** @var \TYPO3\Flow\Resource\Resource $resource */
             $resource = $this->writeFile($propertyValue);
             if ($resource instanceof Resource) {
-
-                switch ($resource->getMediaType()) {
-                    case (preg_match("/^image\/.*/", $resource->getMediaType()) ? true : false):
-                        $fileToAdd = $this->imageRepository->findOneByResourceSha1($resource->getSha1());
-                        if (!$fileToAdd instanceof Image) {
-                            $fileToAdd = new Image($resource);
-                            $this->imageRepository->add($fileToAdd);
-                            $this->persistenceManager->persistAll();
-                        }
-                        break;
-                    default:
-                        $fileToAdd = $this->assetRepository->findOneByResourceSha1($resource->getSha1());
-                        if (!$fileToAdd instanceof Asset) {
-                            $fileToAdd = new Asset($resource);
-                            $this->assetRepository->add($fileToAdd);
-                            $this->persistenceManager->persistAll();
-                        }
-                        break;
+                $fileToAdd = $this->assetRepository->findOneByResourceSha1($resource->getSha1());
+                if (!$fileToAdd instanceof Asset) {
+                    $fileToAdd = new Asset($resource);
+                    $this->assetRepository->add($fileToAdd);
+                    $this->persistenceManager->persistAll();
                 }
-
                 $propertyValue = $fileToAdd;
             }
 
         }
 
-        if($this->validateDate($propertyValue)) {
+        // Check for image uploads
+        if ($type === 'TYPO3\Media\Domain\Model\ImageInterface') {
+            /** @var \TYPO3\Flow\Resource\Resource $resource */
+            $resource = $this->writeFile($propertyValue);
+            if ($resource instanceof Resource) {
+                $fileToAdd = $this->imageRepository->findOneByResourceSha1($resource->getSha1());
+                if (!$fileToAdd instanceof Image) {
+                    $fileToAdd = new Image($resource);
+                    $this->imageRepository->add($fileToAdd);
+                    $this->persistenceManager->persistAll();
+                }
+                $propertyValue = $fileToAdd;
+            }
+
+        }
+
+        if ($type === 'DateTime' && $this->validateDate($propertyValue)) {
             $propertyValue = \DateTime::createFromFormat('Y-m-d\TH:i', $propertyValue);
         }
 
+        if ($type === 'references') {
+//            $propertyValue = json_encode($propertyValue);
+        }
+
         return $propertyValue;
+    }
+
+    /**
+     * @param string $property
+     * @param NodeInterface|NodeTemplate $node
+     * @return string
+     */
+    private function getConfigurationTypeForPropertyByNode($property, $node) {
+        return $node->getNodeType()->getConfiguration('properties.' . $property . '.type');
     }
 
     /**
@@ -286,7 +312,7 @@ class WriteService
      */
     private function validateDate($date)
     {
-        if(is_object($date) && (!$date instanceof \DateTime)) {
+        if (is_object($date) && (!$date instanceof \DateTime)) {
             return false;
         }
 
