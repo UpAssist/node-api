@@ -286,6 +286,14 @@ class WriteService
      */
     private function validateDate($date)
     {
+        if(is_object($date) && (!$date instanceof \DateTime)) {
+            return false;
+        }
+
+        if ($date instanceof \DateTime) {
+            return true;
+        }
+
         $d = \DateTime::createFromFormat('Y-m-d\TH:i', $date);
         return $d && $d->format('Y-m-d\TH:i') === $date;
     }
