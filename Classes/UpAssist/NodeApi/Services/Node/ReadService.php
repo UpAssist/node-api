@@ -52,11 +52,16 @@ class ReadService
      * @param NodeInterface $startingPoint
      * @return array <\TYPO3\TYPO3CR\Domain\Model\NodeInterface>
      */
-    public function findByProperties($term, array $searchNodeTypes, Context $context, NodeInterface $startingPoint = null)
+    public function findByProperties($term, array $searchNodeTypes, Context $context = null, NodeInterface $startingPoint = null)
     {
         if (strlen($term) === 0) {
             throw new \InvalidArgumentException('"term" cannot be empty: provide a term to search for.', 1421329285);
         }
+
+        if ($context === null) {
+            $context = $this->contentContextService->getContentContext();
+        }
+
         $searchResult = [];
         $nodeTypeFilter = implode(',', $searchNodeTypes);
         $nodeDataRecords = $this->nodeDataRepository->findByProperties($term, $nodeTypeFilter, $context->getWorkspace(), $context->getDimensions(), $startingPoint ? $startingPoint->getPath() : null);
@@ -77,12 +82,17 @@ class ReadService
      * @param NodeInterface|null $startingPoint
      * @return mixed
      */
-    public function findOneByProperties($term, array $searchNodeTypes, Context $context, NodeInterface $startingPoint = null)
+    public function findOneByProperties($term, array $searchNodeTypes, Context $context = null, NodeInterface $startingPoint = null)
     {
+
+        if ($context === null) {
+            $context = $this->contentContextService->getContentContext();
+        }
+
         $nodes = $this->findByProperties($term, $searchNodeTypes, $context, $startingPoint);
 
         if (!empty($nodes)) {
-            return $nodes[0];
+            return reset($nodes);
         }
 
         return null;
