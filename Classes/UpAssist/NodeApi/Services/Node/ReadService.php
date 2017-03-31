@@ -99,19 +99,20 @@ class ReadService
     }
 
     /**
-     * @param array $nodeTypeFilter
+     * @param string $nodeTypeFilter
+     * @param array $contextProperties
      * @return array
      */
-    public function findByNodeType($nodeTypeFilter)
+    public function findByNodeType($nodeTypeFilter, $contextProperties = [])
     {
         if (is_array($nodeTypeFilter)) {
             $nodeTypeFilter = implode(',', $nodeTypeFilter);
         }
 
-        $context = $this->contentContextService->getContentContext();
+        $context = $this->contentContextService->getContentContext($contextProperties);
         $nodes = [];
         $siteNode = $context->getCurrentSiteNode();
-        foreach ($this->nodeDataRepository->findByParentAndNodeTypeRecursively($siteNode->getPath(), $nodeTypeFilter, $context->getWorkspace()) as $nodeData) {
+        foreach ($this->nodeDataRepository->findByParentAndNodeTypeRecursively($siteNode->getPath(), $nodeTypeFilter, $context->getWorkspace(), $context->getDimensions()) as $nodeData) {
             $nodes[] = $this->nodeFactory->createFromNodeData($nodeData, $context);
         }
 

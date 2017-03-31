@@ -93,8 +93,9 @@ class WriteService
      */
     public function createNode($referenceNodeIdentifier, $nodeType, $nodeData = [])
     {
+        $dimensions = isset($nodeData['dimensions']) ? $nodeData['dimensions'] : [];
         /** @var Node $referenceNode */
-        $referenceNode = $this->nodeReadService->getNodeByIdentifier($referenceNodeIdentifier);
+        $referenceNode = $this->nodeReadService->getNodeByIdentifier($referenceNodeIdentifier, $dimensions);
 
         /** @var NodeType $nodeTypeObject */
         $nodeTypeObject = $this->nodeTypeManager->getNodeType($nodeType);
@@ -119,8 +120,10 @@ class WriteService
             }
         }
 
+
         if ($referenceNode instanceof Node) {
 
+            /** @var NodeInterface $node */
             $node = $referenceNode->createNodeFromTemplate($nodeTemplate);
 
             /**
