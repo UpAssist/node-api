@@ -85,6 +85,7 @@ class WriteService
 
 
     /**
+     * @Flow\SkipCsrfProtection
      * @param string $referenceNodeIdentifier
      * @param string $nodeType
      * @param array $nodeData
@@ -143,6 +144,7 @@ class WriteService
     }
 
     /**
+     * @Flow\SkipCsrfProtection
      * @param Node $node
      */
     public function deleteNode(Node $node)
@@ -152,6 +154,7 @@ class WriteService
     }
 
     /**
+     * @Flow\SkipCsrfProtection
      * @param Node $parentNode
      * @param string $nodePath
      * @param string $contentNodeType
@@ -176,6 +179,7 @@ class WriteService
     /**
      * Use this to update some meta properties of the Node.
      *
+     * @Flow\SkipCsrfProtection
      * @param Node $node
      * @param array $nodeData
      * @return Node
@@ -197,6 +201,7 @@ class WriteService
     }
 
     /**
+     * @Flow\SkipCsrfProtection
      * @param Node $node
      * @param array $properties
      * @return Node
@@ -224,6 +229,7 @@ class WriteService
     }
 
     /**
+     *
      * @param mixed $propertyValue
      * @param string $type
      * @return NULL|string|Asset|\TYPO3\Media\Domain\Model\AssetInterface|Image
@@ -285,6 +291,7 @@ class WriteService
     }
 
     /**
+     * @Flow\SkipCsrfProtection
      * @param array $file
      * @return Resource
      */
