@@ -155,6 +155,16 @@ class WriteService
 
     /**
      * @Flow\SkipCsrfProtection
+     * @param Node $node
+     */
+    public function hideNode(Node $node)
+    {
+        $node->setHidden(true);
+        $this->persistenceManager->persistAll();
+    }
+
+    /**
+     * @Flow\SkipCsrfProtection
      * @param Node $parentNode
      * @param string $nodePath
      * @param string $contentNodeType
@@ -205,6 +215,7 @@ class WriteService
      * @param Node $node
      * @param array $properties
      * @return Node
+     * @throws \TYPO3\Flow\Persistence\Exception\IllegalObjectTypeException
      */
     public function updateNodeProperties(Node $node, $properties = [])
     {

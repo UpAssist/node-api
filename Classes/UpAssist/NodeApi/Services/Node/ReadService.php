@@ -2,7 +2,11 @@
 namespace UpAssist\NodeApi\Services\Node;
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Mvc\Controller\ControllerContext;
+use TYPO3\Flow\Mvc\Exception\NoMatchingRouteException;
 use TYPO3\Flow\Property\PropertyMapper;
+use TYPO3\Neos\Exception;
+use TYPO3\Neos\Service\LinkingService;
 use TYPO3\TYPO3CR\Domain\Service\Context;
 use TYPO3\TYPO3CR\Domain\Factory\NodeFactory;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
@@ -42,15 +46,20 @@ class ReadService
     protected $propertyMapper;
 
     /**
-     * Search all properties for given $term
-     *
-     * TODO: Implement a better search when Flow offer the possibility
+     * @Flow\Inject
+     * @var LinkingService
+     */
+    protected $linkingService;
+
+    /**
+     * Search all nodes for a given term
      *
      * @param string $term
      * @param array $searchNodeTypes
-     * @param Context $context
-     * @param NodeInterface $startingPoint
-     * @return array <\TYPO3\TYPO3CR\Domain\Model\NodeInterface>
+     * @param Context|null $context
+     * @param NodeInterface|null $startingPoint
+     * @return array
+     * @throws \TYPO3\TYPO3CR\Exception\NodeConfigurationException
      */
     public function findByProperties($term, array $searchNodeTypes, Context $context = null, NodeInterface $startingPoint = null)
     {
@@ -78,9 +87,10 @@ class ReadService
     /**
      * @param string $term
      * @param array $searchNodeTypes
-     * @param Context $context
+     * @param Context|null $context
      * @param NodeInterface|null $startingPoint
-     * @return mixed
+     * @return mixed|null
+     * @throws \TYPO3\TYPO3CR\Exception\NodeConfigurationException
      */
     public function findOneByProperties($term, array $searchNodeTypes, Context $context = null, NodeInterface $startingPoint = null)
     {
@@ -102,6 +112,7 @@ class ReadService
      * @param string $nodeTypeFilter
      * @param array $contextProperties
      * @return array
+     * @throws \TYPO3\TYPO3CR\Exception\NodeConfigurationException
      */
     public function findByNodeType($nodeTypeFilter, $contextProperties = [])
     {
@@ -135,10 +146,32 @@ class ReadService
 
     /**
      * @param string $string
-     * @return NodeInterface
+     * @return mixed
+     * @throws \TYPO3\Flow\Property\Exception
+     * @throws \TYPO3\Flow\Security\Exception
      */
     public function getNodeByNodeString($string)
     {
         return $this->propertyMapper->convert($string, NodeInterface::class);
+    }
+
+    /**
+     *
+     * @param ControllerContext $controllerContext
+     * @param NodeInterface $node
+     * @return string
+     * @throws \TYPO3\Neos\Exception
+     */
+    public function getNodeUri($controllerContext, $node) {
+        try {
+            return $this->linkingService->createNodeUri(
+                $controllerContext,
+                $node
+            );
+        } catch (Exception $exception) {
+//            $this->systemLogger->logException($exception);
+        }
+
+        return '';
     }
 }
