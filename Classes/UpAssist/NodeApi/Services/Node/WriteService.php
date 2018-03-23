@@ -2,6 +2,7 @@
 namespace UpAssist\NodeApi\Services\Node;
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Cache\CacheManager;
 use TYPO3\Flow\Log\SystemLoggerInterface;
 use TYPO3\Flow\Persistence\PersistenceManagerInterface;
 use TYPO3\Flow\Resource\Resource;
@@ -83,6 +84,11 @@ class WriteService
      */
     protected $contentCacheFlusher;
 
+    /**
+     * @Flow\Inject
+     * @var CacheManager
+     */
+    protected $cacheManager;
 
     /**
      * @Flow\SkipCsrfProtection
@@ -151,6 +157,7 @@ class WriteService
     {
         $node->setRemoved(true);
         $this->persistenceManager->persistAll();
+        $this->cacheManager->flushCaches($node->getCacheEntryIdentifier());
     }
 
     /**
@@ -161,6 +168,7 @@ class WriteService
     {
         $node->setHidden(true);
         $this->persistenceManager->persistAll();
+        $this->cacheManager->flushCaches($node->getCacheEntryIdentifier());
     }
 
     /**
@@ -182,7 +190,10 @@ class WriteService
             }
         }
 
-        return $parentNode->getNode($nodePath)->createNodeFromTemplate($nodeTemplate);
+        $parentNode->getNode($nodePath)->createNodeFromTemplate($nodeTemplate);
+        $this->cacheManager->flushCaches($parentNode->getCacheEntryIdentifier());
+        return $parentNode;
+
     }
 
 
@@ -206,6 +217,7 @@ class WriteService
 
         $this->persistenceManager->persistAll();
         $this->contentCacheFlusher->registerNodeChange($node);
+        $this->cacheManager->flushCaches($node->getCacheEntryIdentifier());
 
         return $node;
     }
@@ -235,6 +247,7 @@ class WriteService
 
         $this->persistenceManager->persistAll();
         $this->contentCacheFlusher->registerNodeChange($node);
+        $this->cacheManager->flushCaches($node->getCacheEntryIdentifier());
 
         return $node;
     }
@@ -344,4 +357,5 @@ class WriteService
         $d = \DateTime::createFromFormat('Y-m-d\TH:i', $date);
         return $d && $d->format('Y-m-d\TH:i') === $date;
     }
+
 }
