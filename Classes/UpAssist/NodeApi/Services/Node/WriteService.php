@@ -85,12 +85,6 @@ class WriteService
     protected $contentCacheFlusher;
 
     /**
-     * @Flow\Inject
-     * @var CacheManager
-     */
-    protected $cacheManager;
-
-    /**
      * @Flow\SkipCsrfProtection
      * @param string $referenceNodeIdentifier
      * @param string $nodeType
@@ -157,7 +151,6 @@ class WriteService
     {
         $node->setRemoved(true);
         $this->persistenceManager->persistAll();
-        $this->cacheManager->flushCaches($node->getCacheEntryIdentifier());
     }
 
     /**
@@ -168,7 +161,6 @@ class WriteService
     {
         $node->setHidden(true);
         $this->persistenceManager->persistAll();
-        $this->cacheManager->flushCaches($node->getCacheEntryIdentifier());
     }
 
     /**
@@ -190,10 +182,7 @@ class WriteService
             }
         }
 
-        $parentNode->getNode($nodePath)->createNodeFromTemplate($nodeTemplate);
-        $this->cacheManager->flushCaches($parentNode->getCacheEntryIdentifier());
-        return $parentNode;
-
+        return $parentNode->getNode($nodePath)->createNodeFromTemplate($nodeTemplate);
     }
 
 
@@ -217,7 +206,6 @@ class WriteService
 
         $this->persistenceManager->persistAll();
         $this->contentCacheFlusher->registerNodeChange($node);
-        $this->cacheManager->flushCaches($node->getCacheEntryIdentifier());
 
         return $node;
     }
@@ -247,7 +235,6 @@ class WriteService
 
         $this->persistenceManager->persistAll();
         $this->contentCacheFlusher->registerNodeChange($node);
-        $this->cacheManager->flushCaches($node->getCacheEntryIdentifier());
 
         return $node;
     }
