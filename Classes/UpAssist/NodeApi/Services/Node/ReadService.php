@@ -5,6 +5,7 @@ use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Mvc\Controller\ControllerContext;
 use TYPO3\Flow\Mvc\Exception\NoMatchingRouteException;
 use TYPO3\Flow\Property\PropertyMapper;
+use TYPO3\Neos\Domain\Service\ContentContext;
 use TYPO3\Neos\Exception;
 use TYPO3\Neos\Service\LinkingService;
 use TYPO3\TYPO3CR\Domain\Service\Context;
@@ -109,18 +110,22 @@ class ReadService
     }
 
     /**
-     * @param string $nodeTypeFilter
+     * @param $nodeTypeFilter
      * @param array $contextProperties
+     * @param ContentContext|null $context
      * @return array
      * @throws \TYPO3\TYPO3CR\Exception\NodeConfigurationException
      */
-    public function findByNodeType($nodeTypeFilter, $contextProperties = [])
+    public function findByNodeType($nodeTypeFilter, $contextProperties = [], ContentContext $context = null)
     {
         if (is_array($nodeTypeFilter)) {
             $nodeTypeFilter = implode(',', $nodeTypeFilter);
         }
 
-        $context = $this->contentContextService->getContentContext($contextProperties);
+        if ($context === null) {
+            $context = $this->contentContextService->getContentContext($contextProperties);
+        }
+
         $nodes = [];
         $siteNode = $context->getCurrentSiteNode();
         foreach ($this->nodeDataRepository->findByParentAndNodeTypeRecursively($siteNode->getPath(), $nodeTypeFilter, $context->getWorkspace(), $context->getDimensions()) as $nodeData) {
@@ -132,13 +137,16 @@ class ReadService
     }
 
     /**
-     * @param string $identifier
+     * @param $identifier
      * @param array $contextProperties
+     * @param ContentContext|null $context
      * @return NodeInterface
      */
-    public function getNodeByIdentifier($identifier, array $contextProperties = [])
+    public function getNodeByIdentifier($identifier, array $contextProperties = [], ContentContext $context = null)
     {
-        $context = $this->contentContextService->getContentContext($contextProperties);
+        if ($context === null) {
+            $context = $this->contentContextService->getContentContext($contextProperties);
+        }
 
         return $context->getNodeByIdentifier($identifier);
     }
