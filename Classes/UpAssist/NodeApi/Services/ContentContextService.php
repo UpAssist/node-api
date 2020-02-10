@@ -47,7 +47,7 @@ class ContentContextService
         }
 
         $contextPropertiesArray = ['workspaceName' => 'live'];
-        $contextProperties = \Neos\Flow\Utility\Arrays::arrayMergeRecursiveOverrule($contextPropertiesArray, $contextProperties);
+        $contextProperties = \Neos\Utility\Arrays::arrayMergeRecursiveOverrule($contextPropertiesArray, $contextProperties);
 
         $currentDomain = $this->domainRepository->findOneByActiveRequest();
 
