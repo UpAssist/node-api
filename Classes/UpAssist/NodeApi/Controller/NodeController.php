@@ -8,7 +8,7 @@ use TYPO3\TYPO3CR\Domain\Model\Node;
  * Class NodeController
  * @package UpAssist\NodeApi\Controller
  */
-class NodeController extends \TYPO3\Neos\Service\Controller\NodeController
+class NodeController extends \Neos\Neos\Service\Controller\NodeController
 {
 
     /**

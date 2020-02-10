@@ -13,13 +13,13 @@ roles:
         privilegeTarget: 'UpAssist.NodeApi:NodeController'
         permission: GRANT
       -
-        privilegeTarget: 'TYPO3.Neos:AllControllerActions'
+        privilegeTarget: 'Neos.Neos:AllControllerActions'
         permission: GRANT
       -
-        privilegeTarget: 'TYPO3.Neos:Backend.EditContent'
+        privilegeTarget: 'Neos.Neos:Backend.EditContent'
         permission: GRANT
 
-  'TYPO3.Neos:Editor':
+  'Neos.Neos:Editor':
     privileges:
       -
         privilegeTarget: 'UpAssist.NodeApi:NodeController'

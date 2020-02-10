@@ -11,7 +11,7 @@ use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\Image;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\ImageRepository;
-use TYPO3\Neos\TypoScript\Cache\ContentCacheFlusher;
+use Neos\Neos\TypoScript\Cache\ContentCacheFlusher;
 use TYPO3\TYPO3CR\Domain\Model\Node;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Model\NodeTemplate;
@@ -111,7 +111,7 @@ class WriteService
             foreach ($nodeData['properties'] as $propertyName => $propertyValue) {
 
                 // Match the uripathsegment
-                if ($propertyName === 'title' && $nodeTemplate->getNodeType()->isOfType('TYPO3.Neos:Document')) {
+                if ($propertyName === 'title' && $nodeTemplate->getNodeType()->isOfType('Neos.Neos:Document')) {
                     $newUriPathSegment = strtolower(Utility::renderValidNodeName($propertyValue));
                     $nodeTemplate->setProperty('uriPathSegment', $newUriPathSegment);
                 }
@@ -221,7 +221,7 @@ class WriteService
     {
 
         foreach ($properties as $property => $value) {
-            if ($property === 'title' && $node->getNodeType()->isOfType('TYPO3.Neos:Document')) {
+            if ($property === 'title' && $node->getNodeType()->isOfType('Neos.Neos:Document')) {
                 $newUriPathSegment = strtolower(Utility::renderValidNodeName($value));
                 $node->setProperty('uriPathSegment', $newUriPathSegment);
             }
@@ -229,7 +229,7 @@ class WriteService
             $node->getNodeData()->setProperty($property, $this->propertyValueMapper($value, $this->getConfigurationTypeForPropertyByNode($property, $node)));
         }
 
-        if ($node->getNodeType()->isOfType('TYPO3.Neos:Document')) {
+        if ($node->getNodeType()->isOfType('Neos.Neos:Document')) {
             $node->getNodeData()->setLastPublicationDateTime(new \DateTime());
         }
 

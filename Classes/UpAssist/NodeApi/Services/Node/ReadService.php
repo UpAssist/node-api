@@ -5,9 +5,9 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Mvc\Controller\ControllerContext;
 use Neos\Flow\Mvc\Exception\NoMatchingRouteException;
 use Neos\Flow\Property\PropertyMapper;
-use TYPO3\Neos\Domain\Service\ContentContext;
-use TYPO3\Neos\Exception;
-use TYPO3\Neos\Service\LinkingService;
+use Neos\Neos\Domain\Service\ContentContext;
+use Neos\Neos\Exception;
+use Neos\Neos\Service\LinkingService;
 use TYPO3\TYPO3CR\Domain\Service\Context;
 use TYPO3\TYPO3CR\Domain\Factory\NodeFactory;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
@@ -168,7 +168,7 @@ class ReadService
      * @param ControllerContext $controllerContext
      * @param NodeInterface $node
      * @return string
-     * @throws \TYPO3\Neos\Exception
+     * @throws \Neos\Neos\Exception
      */
     public function getNodeUri($controllerContext, $node) {
         try {
