@@ -1,7 +1,7 @@
 <?php
 namespace UpAssist\NodeApi\ViewHelpers\Node;
 
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 use TYPO3\Fluid\Core\ViewHelper\AbstractViewHelper;
 use UpAssist\NodeApi\Services\Node\ReadService;
 

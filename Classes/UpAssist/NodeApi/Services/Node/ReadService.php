@@ -1,10 +1,10 @@
 <?php
 namespace UpAssist\NodeApi\Services\Node;
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Mvc\Controller\ControllerContext;
-use TYPO3\Flow\Mvc\Exception\NoMatchingRouteException;
-use TYPO3\Flow\Property\PropertyMapper;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Mvc\Controller\ControllerContext;
+use Neos\Flow\Mvc\Exception\NoMatchingRouteException;
+use Neos\Flow\Property\PropertyMapper;
 use TYPO3\Neos\Domain\Service\ContentContext;
 use TYPO3\Neos\Exception;
 use TYPO3\Neos\Service\LinkingService;
@@ -155,8 +155,8 @@ class ReadService
     /**
      * @param string $string
      * @return mixed
-     * @throws \TYPO3\Flow\Property\Exception
-     * @throws \TYPO3\Flow\Security\Exception
+     * @throws \Neos\Flow\Property\Exception
+     * @throws \Neos\Flow\Security\Exception
      */
     public function getNodeByNodeString($string)
     {

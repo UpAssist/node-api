@@ -1,7 +1,7 @@
 <?php
 namespace UpAssist\NodeApi\Services;
 
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 use TYPO3\Neos\Domain\Repository\DomainRepository;
 use TYPO3\Neos\Domain\Repository\SiteRepository;
 use TYPO3\Neos\Domain\Service\ContentContext;
@@ -47,7 +47,7 @@ class ContentContextService
         }
 
         $contextPropertiesArray = ['workspaceName' => 'live'];
-        $contextProperties = \TYPO3\Flow\Utility\Arrays::arrayMergeRecursiveOverrule($contextPropertiesArray, $contextProperties);
+        $contextProperties = \Neos\Flow\Utility\Arrays::arrayMergeRecursiveOverrule($contextPropertiesArray, $contextProperties);
 
         $currentDomain = $this->domainRepository->findOneByActiveRequest();
 

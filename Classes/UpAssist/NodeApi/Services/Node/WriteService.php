@@ -1,12 +1,12 @@
 <?php
 namespace UpAssist\NodeApi\Services\Node;
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Cache\CacheManager;
-use TYPO3\Flow\Log\SystemLoggerInterface;
-use TYPO3\Flow\Persistence\PersistenceManagerInterface;
-use TYPO3\Flow\ResourceManagement\PersistentResource;
-use TYPO3\Flow\ResourceManagement\ResourceManager;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Cache\CacheManager;
+use Neos\Flow\Log\SystemLoggerInterface;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Flow\ResourceManagement\PersistentResource;
+use Neos\Flow\ResourceManagement\ResourceManager;
 use TYPO3\Media\Domain\Model\Asset;
 use TYPO3\Media\Domain\Model\Image;
 use TYPO3\Media\Domain\Repository\AssetRepository;
@@ -215,7 +215,7 @@ class WriteService
      * @param Node $node
      * @param array $properties
      * @return Node
-     * @throws \TYPO3\Flow\Persistence\Exception\IllegalObjectTypeException
+     * @throws \Neos\Flow\Persistence\Exception\IllegalObjectTypeException
      */
     public function updateNodeProperties(Node $node, $properties = [])
     {
@@ -244,14 +244,14 @@ class WriteService
      * @param mixed $propertyValue
      * @param string $type
      * @return NULL|string|Asset|\TYPO3\Media\Domain\Model\AssetInterface|Image
-     * @throws \TYPO3\Flow\Persistence\Exception\IllegalObjectTypeException
+     * @throws \Neos\Flow\Persistence\Exception\IllegalObjectTypeException
      */
     private function propertyValueMapper($propertyValue, $type)
     {
 
         // Check for file uploads
         if ($type === 'TYPO3\Media\Domain\Model\Asset') {
-            /** @var \TYPO3\Flow\ResourceManagement\PersistentResource $resource */
+            /** @var \Neos\Flow\ResourceManagement\PersistentResource $resource */
             $resource = $this->writeFile($propertyValue);
             if ($resource instanceof Resource) {
                 $fileToAdd = $this->assetRepository->findOneByResourceSha1($resource->getSha1());
@@ -267,7 +267,7 @@ class WriteService
 
         // Check for image uploads
         if ($type === 'TYPO3\Media\Domain\Model\ImageInterface') {
-            /** @var \TYPO3\Flow\ResourceManagement\PersistentResource $resource */
+            /** @var \Neos\Flow\ResourceManagement\PersistentResource $resource */
             $resource = $this->writeFile($propertyValue);
             if ($resource instanceof Resource) {
                 $fileToAdd = $this->imageRepository->findOneByResourceSha1($resource->getSha1());

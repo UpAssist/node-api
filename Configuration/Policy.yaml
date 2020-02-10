@@ -1,6 +1,6 @@
 privilegeTargets:
 
-  'TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
+  'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
 
     'UpAssist.NodeApi:NodeController':
       matcher: 'within(UpAssist\NodeApi\Controller\NodeController) && method(public .*->(?!initialize).*Action())'
