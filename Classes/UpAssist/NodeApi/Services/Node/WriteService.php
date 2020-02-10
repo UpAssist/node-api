@@ -7,10 +7,10 @@ use Neos\Flow\Log\SystemLoggerInterface;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Flow\ResourceManagement\ResourceManager;
-use TYPO3\Media\Domain\Model\Asset;
-use TYPO3\Media\Domain\Model\Image;
-use TYPO3\Media\Domain\Repository\AssetRepository;
-use TYPO3\Media\Domain\Repository\ImageRepository;
+use Neos\Media\Domain\Model\Asset;
+use Neos\Media\Domain\Model\Image;
+use Neos\Media\Domain\Repository\AssetRepository;
+use Neos\Media\Domain\Repository\ImageRepository;
 use TYPO3\Neos\TypoScript\Cache\ContentCacheFlusher;
 use TYPO3\TYPO3CR\Domain\Model\Node;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
@@ -243,14 +243,14 @@ class WriteService
      *
      * @param mixed $propertyValue
      * @param string $type
-     * @return NULL|string|Asset|\TYPO3\Media\Domain\Model\AssetInterface|Image
+     * @return NULL|string|Asset|\Neos\Media\Domain\Model\AssetInterface|Image
      * @throws \Neos\Flow\Persistence\Exception\IllegalObjectTypeException
      */
     private function propertyValueMapper($propertyValue, $type)
     {
 
         // Check for file uploads
-        if ($type === 'TYPO3\Media\Domain\Model\Asset') {
+        if ($type === 'Neos\Media\Domain\Model\Asset') {
             /** @var \Neos\Flow\ResourceManagement\PersistentResource $resource */
             $resource = $this->writeFile($propertyValue);
             if ($resource instanceof Resource) {
@@ -266,7 +266,7 @@ class WriteService
         }
 
         // Check for image uploads
-        if ($type === 'TYPO3\Media\Domain\Model\ImageInterface') {
+        if ($type === 'Neos\Media\Domain\Model\ImageInterface') {
             /** @var \Neos\Flow\ResourceManagement\PersistentResource $resource */
             $resource = $this->writeFile($propertyValue);
             if ($resource instanceof Resource) {
