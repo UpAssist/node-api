@@ -2,7 +2,7 @@
 namespace UpAssist\NodeApi\Controller;
 
 use Neos\Flow\Annotations as Flow;
-use TYPO3\TYPO3CR\Domain\Model\Node;
+use Neos\ContentRepository\Domain\Model\Node;
 
 /**
  * Class NodeController

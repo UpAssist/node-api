@@ -8,10 +8,10 @@ use Neos\Flow\Property\PropertyMapper;
 use Neos\Neos\Domain\Service\ContentContext;
 use Neos\Neos\Exception;
 use Neos\Neos\Service\LinkingService;
-use TYPO3\TYPO3CR\Domain\Service\Context;
-use TYPO3\TYPO3CR\Domain\Factory\NodeFactory;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
-use TYPO3\TYPO3CR\Domain\Repository\NodeDataRepository;
+use Neos\ContentRepository\Domain\Service\Context;
+use Neos\ContentRepository\Domain\Factory\NodeFactory;
+use Neos\ContentRepository\Domain\Model\NodeInterface;
+use Neos\ContentRepository\Domain\Repository\NodeDataRepository;
 use UpAssist\NodeApi\Services\ContentContextService;
 
 /**
@@ -60,7 +60,7 @@ class ReadService
      * @param Context|null $context
      * @param NodeInterface|null $startingPoint
      * @return array
-     * @throws \TYPO3\TYPO3CR\Exception\NodeConfigurationException
+     * @throws \Neos\ContentRepository\Exception\NodeConfigurationException
      */
     public function findByProperties($term, array $searchNodeTypes, Context $context = null, NodeInterface $startingPoint = null)
     {
@@ -91,7 +91,7 @@ class ReadService
      * @param Context|null $context
      * @param NodeInterface|null $startingPoint
      * @return mixed|null
-     * @throws \TYPO3\TYPO3CR\Exception\NodeConfigurationException
+     * @throws \Neos\ContentRepository\Exception\NodeConfigurationException
      */
     public function findOneByProperties($term, array $searchNodeTypes, Context $context = null, NodeInterface $startingPoint = null)
     {
@@ -114,7 +114,7 @@ class ReadService
      * @param array $contextProperties
      * @param ContentContext|null $context
      * @return array
-     * @throws \TYPO3\TYPO3CR\Exception\NodeConfigurationException
+     * @throws \Neos\ContentRepository\Exception\NodeConfigurationException
      */
     public function findByNodeType($nodeTypeFilter, $contextProperties = [], ContentContext $context = null)
     {

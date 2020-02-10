@@ -12,15 +12,15 @@ use Neos\Media\Domain\Model\Image;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\ImageRepository;
 use Neos\Neos\TypoScript\Cache\ContentCacheFlusher;
-use TYPO3\TYPO3CR\Domain\Model\Node;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
-use TYPO3\TYPO3CR\Domain\Model\NodeTemplate;
-use TYPO3\TYPO3CR\Domain\Model\NodeType;
-use TYPO3\TYPO3CR\Domain\Model\Workspace;
-use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
-use TYPO3\TYPO3CR\Domain\Service\PublishingService;
-use TYPO3\TYPO3CR\Migration\Configuration\ConfigurationInterface;
-use TYPO3\TYPO3CR\Utility;
+use Neos\ContentRepository\Domain\Model\Node;
+use Neos\ContentRepository\Domain\Model\NodeInterface;
+use Neos\ContentRepository\Domain\Model\NodeTemplate;
+use Neos\ContentRepository\Domain\Model\NodeType;
+use Neos\ContentRepository\Domain\Model\Workspace;
+use Neos\ContentRepository\Domain\Service\NodeTypeManager;
+use Neos\ContentRepository\Domain\Service\PublishingService;
+use Neos\ContentRepository\Migration\Configuration\ConfigurationInterface;
+use Neos\ContentRepository\Utility;
 use UpAssist\NodeApi\Services\ContentContextService;
 
 /**
@@ -90,7 +90,7 @@ class WriteService
      * @param string $nodeType
      * @param array $nodeData
      * @return Node|null
-     * @throws \TYPO3\TYPO3CR\Exception\NodeException
+     * @throws \Neos\ContentRepository\Exception\NodeException
      */
     public function createNode($referenceNodeIdentifier, $nodeType, $nodeData = [])
     {
@@ -169,7 +169,7 @@ class WriteService
      * @param string $nodePath
      * @param string $contentNodeType
      * @param array $contentNodeData
-     * @return \TYPO3\TYPO3CR\Domain\Model\NodeInterface
+     * @return \Neos\ContentRepository\Domain\Model\NodeInterface
      */
     public function addContent(Node $parentNode, $nodePath, $contentNodeType, $contentNodeData = [])
     {
