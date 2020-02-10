@@ -5,8 +5,8 @@ use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Cache\CacheManager;
 use TYPO3\Flow\Log\SystemLoggerInterface;
 use TYPO3\Flow\Persistence\PersistenceManagerInterface;
-use TYPO3\Flow\Resource\Resource;
-use TYPO3\Flow\Resource\ResourceManager;
+use TYPO3\Flow\ResourceManagement\PersistentResource;
+use TYPO3\Flow\ResourceManagement\ResourceManager;
 use TYPO3\Media\Domain\Model\Asset;
 use TYPO3\Media\Domain\Model\Image;
 use TYPO3\Media\Domain\Repository\AssetRepository;
@@ -251,7 +251,7 @@ class WriteService
 
         // Check for file uploads
         if ($type === 'TYPO3\Media\Domain\Model\Asset') {
-            /** @var \TYPO3\Flow\Resource\Resource $resource */
+            /** @var \TYPO3\Flow\ResourceManagement\PersistentResource $resource */
             $resource = $this->writeFile($propertyValue);
             if ($resource instanceof Resource) {
                 $fileToAdd = $this->assetRepository->findOneByResourceSha1($resource->getSha1());
@@ -267,7 +267,7 @@ class WriteService
 
         // Check for image uploads
         if ($type === 'TYPO3\Media\Domain\Model\ImageInterface') {
-            /** @var \TYPO3\Flow\Resource\Resource $resource */
+            /** @var \TYPO3\Flow\ResourceManagement\PersistentResource $resource */
             $resource = $this->writeFile($propertyValue);
             if ($resource instanceof Resource) {
                 $fileToAdd = $this->imageRepository->findOneByResourceSha1($resource->getSha1());
