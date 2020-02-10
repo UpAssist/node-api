@@ -11,7 +11,7 @@ use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\Image;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\ImageRepository;
-use Neos\Neos\TypoScript\Cache\ContentCacheFlusher;
+use Neos\Neos\Fusion\Cache\ContentCacheFlusher;
 use Neos\ContentRepository\Domain\Model\Node;
 use Neos\ContentRepository\Domain\Model\NodeInterface;
 use Neos\ContentRepository\Domain\Model\NodeTemplate;
