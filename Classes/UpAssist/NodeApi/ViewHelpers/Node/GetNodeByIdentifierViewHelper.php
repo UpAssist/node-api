@@ -2,7 +2,7 @@
 namespace UpAssist\NodeApi\ViewHelpers\Node;
 
 use Neos\Flow\Annotations as Flow;
-use TYPO3\Fluid\Core\ViewHelper\AbstractViewHelper;
+use Neos\FluidAdaptor\Core\ViewHelper\AbstractViewHelper;
 use UpAssist\NodeApi\Services\Node\ReadService;
 
 class GetNodeByIdentifierViewHelper extends AbstractViewHelper
