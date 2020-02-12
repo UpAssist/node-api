@@ -6,7 +6,7 @@
         "neos/flow": "*"
     },
     "autoload": {
-        "psr-0": {
+        "psr-4": {
             "UpAssist\\NodeApi": "Classes"
         }
     },
