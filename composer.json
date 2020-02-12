@@ -82,7 +82,8 @@
             "Neos.Flow-20170127183102",
             "Neos.Fusion-20180211175500",
             "Neos.Fusion-20180211184832",
-            "Neos.Flow-20180415105700"
+            "Neos.Flow-20180415105700",
+            "Networkteam.Neos.MailObfuscator-20190919145400"
         ]
     }
 }
