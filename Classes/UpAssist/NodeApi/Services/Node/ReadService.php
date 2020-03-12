@@ -1,4 +1,5 @@
 <?php
+
 namespace UpAssist\NodeApi\Services\Node;
 
 use TYPO3\Flow\Annotations as Flow;
@@ -64,7 +65,7 @@ class ReadService
      */
     public function findByProperties($term, array $searchNodeTypes, Context $context = null, NodeInterface $startingPoint = null)
     {
-        if (strlen($term) === 0) {
+        if (empty($term) || $term == '') {
             throw new \InvalidArgumentException('"term" cannot be empty: provide a term to search for.', 1421329285);
         }
 
@@ -170,7 +171,8 @@ class ReadService
      * @return string
      * @throws \TYPO3\Neos\Exception
      */
-    public function getNodeUri($controllerContext, $node) {
+    public function getNodeUri($controllerContext, $node)
+    {
         try {
             return $this->linkingService->createNodeUri(
                 $controllerContext,
