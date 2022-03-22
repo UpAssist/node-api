@@ -2,10 +2,8 @@
 namespace UpAssist\NodeApi\Services\Node;
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Cache\CacheManager;
 use Neos\Flow\Log\SystemLoggerInterface;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
-use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\Image;
@@ -18,9 +16,8 @@ use Neos\ContentRepository\Domain\Model\NodeTemplate;
 use Neos\ContentRepository\Domain\Model\NodeType;
 use Neos\ContentRepository\Domain\Model\Workspace;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
-use Neos\ContentRepository\Domain\Service\PublishingService;
-use Neos\ContentRepository\Migration\Configuration\ConfigurationInterface;
 use Neos\ContentRepository\Utility;
+use Psr\Log\LoggerInterface;
 use UpAssist\NodeApi\Services\ContentContextService;
 
 /**
@@ -56,7 +53,7 @@ class WriteService
 
     /**
      * @Flow\Inject
-     * @var SystemLoggerInterface
+     * @var LoggerInterface
      */
     protected $systemLogger;
 
