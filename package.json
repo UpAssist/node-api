@@ -1,0 +1,13 @@
+{
+    "name": "upassist-nodeapi",
+    "version": "7.3.0",
+    "main": "index.js",
+    "repository": "git@bitbucket.org:upassist/upassist-node-api.git",
+    "author": "Henjo Hoeksma <henjo@upassist.com>",
+    "license": "MIT",
+    "scripts": {
+        "release:patch": "npx standard-version -t '' -r patch && git push --follow-tags",
+        "release:minor": "npx standard-version -t '' -r minor && git push --follow-tags",
+        "release:major": "npx standard-version -t '' -r major && git push --follow-tags"
+    }
+}
