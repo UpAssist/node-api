@@ -17,6 +17,7 @@ use Neos\ContentRepository\Domain\Model\NodeType;
 use Neos\ContentRepository\Domain\Model\Workspace;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\ContentRepository\Utility;
+use Psr\Http\Message\UploadedFileInterface;
 use Psr\Log\LoggerInterface;
 use UpAssist\NodeApi\Services\ContentContextService;
 
@@ -247,8 +248,7 @@ class WriteService
     {
 
         // Check for file uploads
-        if ($type === 'Neos\Media\Domain\Model\Asset') {
-            /** @var \Neos\Flow\ResourceManagement\PersistentResource $resource */
+        if ($type === 'Neos\Media\Domain\Model\Asset' && $this->isUpload($propertyValue)) {
             $resource = $this->writeFile($propertyValue);
             if ($resource instanceof PersistentResource) {
                 $fileToAdd = $this->assetRepository->findOneByResourceSha1($resource->getSha1());
@@ -258,13 +258,15 @@ class WriteService
                     $this->persistenceManager->persistAll();
                 }
                 $propertyValue = $fileToAdd;
+            } else {
+                // Never store a rejected or failed upload as raw property value
+                $propertyValue = null;
             }
 
         }
 
         // Check for image uploads
-        if ($type === 'Neos\Media\Domain\Model\ImageInterface') {
-            /** @var \Neos\Flow\ResourceManagement\PersistentResource $resource */
+        if ($type === 'Neos\Media\Domain\Model\ImageInterface' && $this->isUpload($propertyValue)) {
             $resource = $this->writeFile($propertyValue);
             if ($resource instanceof PersistentResource) {
                 $fileToAdd = $this->imageRepository->findOneByResourceSha1($resource->getSha1());
@@ -274,6 +276,9 @@ class WriteService
                     $this->persistenceManager->persistAll();
                 }
                 $propertyValue = $fileToAdd;
+            } else {
+                // Never store a rejected or failed upload as raw property value
+                $propertyValue = null;
             }
 
         }
@@ -299,29 +304,65 @@ class WriteService
     }
 
     /**
-     * @Flow\SkipCsrfProtection
-     * @param array $file
+     * @param mixed $value
+     * @return bool
+     */
+    private function isUpload($value): bool
+    {
+        return $value instanceof UploadedFileInterface || is_array($value);
+    }
+
+    /**
+     * Import an uploaded file as persistent resource.
+     *
+     * Accepts PSR-7 uploaded files (how Flow passes uploads to actions) and
+     * $_FILES-style arrays, but only when "tmp_name" is a real HTTP upload.
+     * Anything else is rejected, so request data can never point at an
+     * arbitrary file on the server.
+     *
+     * @param UploadedFileInterface|array $file
      * @return PersistentResource|null
      */
-    private function writeFile(array $file)
+    private function writeFile($file): ?PersistentResource
     {
-        $fileContent = file_get_contents($file['tmp_name']);
-        $hash = sha1($fileContent);
+        if ($file instanceof UploadedFileInterface) {
+            if ($file->getError() !== UPLOAD_ERR_OK) {
+                return null;
+            }
+            $stream = $file->getStream();
+            if ($stream->isSeekable()) {
+                $stream->rewind();
+            }
+            $fileContent = $stream->getContents();
+            $fileName = (string)$file->getClientFilename();
+        } elseif (is_array($file)
+            && isset($file['tmp_name'], $file['name'])
+            && is_string($file['tmp_name'])
+            && is_uploaded_file($file['tmp_name'])
+        ) {
+            $fileContent = file_get_contents($file['tmp_name']);
+            $fileName = (string)$file['name'];
+        } else {
+            $this->systemLogger->warning('UpAssist.NodeApi: rejected file value that is not an HTTP upload');
+            return null;
+        }
 
-        $resource = $this->resourceManager->getResourceBySha1($hash);
+        if ($fileContent === false || $fileContent === '') {
+            return null;
+        }
 
-        if ($resource !== NULL) {
+        $resource = $this->resourceManager->getResourceBySha1(sha1($fileContent));
+        if ($resource !== null) {
             return $resource;
         }
 
         try {
-            $resource = $this->resourceManager->importResourceFromContent($fileContent, $file['name']);
+            return $this->resourceManager->importResourceFromContent($fileContent, basename($fileName));
         } catch (\Exception $exception) {
-            $this->systemLogger->error('Exception during url to file conversion: ' . $exception->getMessage());
-            $resource = null;
+            $this->systemLogger->error('UpAssist.NodeApi: could not import uploaded file: ' . $exception->getMessage());
         }
 
-        return $resource;
+        return null;
     }
 
 
