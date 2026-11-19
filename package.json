@@ -1,6 +1,6 @@
 {
     "name": "upassist-nodeapi",
-    "version": "8.0.0",
+    "version": "8.0.1",
     "main": "index.js",
     "repository": "git@bitbucket.org:upassist/upassist-node-api.git",
     "author": "Henjo Hoeksma <henjo@upassist.com>",
