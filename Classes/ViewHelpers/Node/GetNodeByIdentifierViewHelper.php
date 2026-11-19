@@ -20,8 +20,15 @@ class GetNodeByIdentifierViewHelper extends AbstractViewHelper
      */
     protected $nodeReadService;
 
-    public function render($nodeIdentifier = null)
+    public function initializeArguments()
     {
+        parent::initializeArguments();
+        $this->registerArgument('nodeIdentifier', 'string', 'Identifier of the node to fetch; falls back to the tag content', false, null);
+    }
+
+    public function render()
+    {
+        $nodeIdentifier = $this->arguments['nodeIdentifier'];
         if ($nodeIdentifier === null) {
             $nodeIdentifier = $this->renderChildren();
         }
