@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: composer
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    ignore:
+      # The 8.x line targets Neos 8 only; a Neos 9 port is a deliberate major release.
+      - dependency-name: "*"
+        update-types: [version-update:semver-major]
+    groups:
+      composer-minor-patch:
+        update-types: [minor, patch]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
