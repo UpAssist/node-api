@@ -2,8 +2,8 @@
 namespace UpAssist\NodeApi\Services\Node;
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Log\SystemLoggerInterface;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\Image;
@@ -250,7 +250,7 @@ class WriteService
         if ($type === 'Neos\Media\Domain\Model\Asset') {
             /** @var \Neos\Flow\ResourceManagement\PersistentResource $resource */
             $resource = $this->writeFile($propertyValue);
-            if ($resource instanceof Resource) {
+            if ($resource instanceof PersistentResource) {
                 $fileToAdd = $this->assetRepository->findOneByResourceSha1($resource->getSha1());
                 if (!$fileToAdd instanceof Asset) {
                     $fileToAdd = new Asset($resource);
@@ -266,7 +266,7 @@ class WriteService
         if ($type === 'Neos\Media\Domain\Model\ImageInterface') {
             /** @var \Neos\Flow\ResourceManagement\PersistentResource $resource */
             $resource = $this->writeFile($propertyValue);
-            if ($resource instanceof Resource) {
+            if ($resource instanceof PersistentResource) {
                 $fileToAdd = $this->imageRepository->findOneByResourceSha1($resource->getSha1());
                 if (!$fileToAdd instanceof Image) {
                     $fileToAdd = new Image($resource);
@@ -301,7 +301,7 @@ class WriteService
     /**
      * @Flow\SkipCsrfProtection
      * @param array $file
-     * @return Resource
+     * @return PersistentResource|null
      */
     private function writeFile(array $file)
     {
@@ -317,7 +317,8 @@ class WriteService
         try {
             $resource = $this->resourceManager->importResourceFromContent($fileContent, $file['name']);
         } catch (\Exception $exception) {
-            $this->systemLogger->log('Exception during url to file conversion: ' . $exception->getMessage());
+            $this->systemLogger->error('Exception during url to file conversion: ' . $exception->getMessage());
+            $resource = null;
         }
 
         return $resource;
